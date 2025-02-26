@@ -17,7 +17,7 @@ public class SharedpreferanceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.sharedpreferance);
 
         // השגת ה-EditText ו-Button
         EditText firstNameEditText = findViewById(R.id.editTextFirstName);
