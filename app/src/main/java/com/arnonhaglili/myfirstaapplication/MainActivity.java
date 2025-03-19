@@ -4,7 +4,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.BroadcastReceiver;
+import android.net.wifi.WifiManager;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -26,12 +29,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView iv;
     ImageView iv2;
 
+    private BroadcastReceiver wifiReceiver;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
+        registerReceiver(wifiReceiver, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
+        unregisterReceiver(wifiReceiver);
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         initViews();
+        wifiReceiver = new MyWiFiBroadcastReceiver();
     }
 
 
@@ -55,17 +77,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onStop();
     }
-    @Override
-    protected void onPause(){
-        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
-        super.onPause();
-        
-    }
-    @Override
-    protected void onResume(){
-        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
-        super.onResume();
-    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
