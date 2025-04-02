@@ -15,7 +15,7 @@ public class MyWiFiBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 
-        if (intent.getAction().equals(WifiManager.NET)) {
+        if (intent.getAction().equals(WifiManager.EXTRA_NETWORK_INFO)) {
             // Get the network info
             NetworkInfo networkInfo = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
 

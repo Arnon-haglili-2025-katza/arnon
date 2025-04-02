@@ -9,6 +9,19 @@
     tools:context=".MainActivity"
     android:id="@+id/constraintLayout">
 
+    <Button
+        android:id="@+id/playPauseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="הפעל"
+        app:layout_constraintBottom_toBottomOf="@+id/sb"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.272" />
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
@@ -78,17 +91,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnClickListener1"
         app:layout_constraintVertical_bias="1.0" />
-
-    <RatingBar
-        android:id="@+id/ratingBar"
-        android:layout_width="234dp"
-        android:layout_height="47dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.309" />
 
     <SeekBar
         android:id="@+id/sb"

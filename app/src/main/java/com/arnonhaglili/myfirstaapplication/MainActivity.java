@@ -5,11 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.BroadcastReceiver;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -28,6 +33,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ConstraintLayout constraintLayout;
     ImageView iv;
     ImageView iv2;
+    private MediaPlayer mediaPlayer;
+    private Button playPauseButton;
+    private boolean isPlaying = false;
+    private SharedPreferences sharedPreferences;
+
 
     private BroadcastReceiver wifiReceiver;
 
@@ -42,6 +52,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
+
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isPlaying", true);
+            editor.apply();
+        }
         unregisterReceiver(wifiReceiver);
     }
 
@@ -52,9 +68,63 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        playPauseButton = findViewById(R.id.playPauseButton);
+        sharedPreferences = getSharedPreferences("MusicPrefs", MODE_PRIVATE);
+
+        // בודק אם המוזיקה היתה פועלת בעת יציאה מהאפליקציה
+        isPlaying = sharedPreferences.getBoolean("isPlaying", false);
+
+        // אם המוזיקה היתה פועלת, הפעל אותה
+        if (isPlaying) {
+            startMusic();
+        }
+
+        playPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPlaying) {
+                    pauseMusic();
+                } else {
+                    startMusic();
+                }
+            }
+        });
+
         initViews();
         wifiReceiver = new MyWiFiBroadcastReceiver();
     }
+    private void startMusic() {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(this, R.raw.music_file); // השתמש בשם הקובץ עם הסיומת .mp3
+            mediaPlayer.setLooping(true); // אם ברצונך שהמוזיקה תשחזר את עצמה
+            mediaPlayer.start();
+            isPlaying = true;
+            playPauseButton.setText("עצור");
+        }
+        mediaPlayer.start();
+        isPlaying = true;
+        playPauseButton.setText("עצור");
+
+        // שמירת המצב של המוזיקה ב-SharedPreferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isPlaying", isPlaying);
+        editor.apply();
+    }
+
+    private void pauseMusic() {
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+            isPlaying = false;
+            playPauseButton.setText("הפעל");
+
+            // שמירת המצב של המוזיקה ב-SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isPlaying", isPlaying);
+            editor.apply();
+        }
+    }
+
+
 
 
     @Override
@@ -69,6 +139,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
 
         super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
     @Override
 
@@ -191,5 +265,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else
             constraintLayout.setBackgroundColor(Color.RED);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection.
+        switch (item.getItemId()) {
+            case R.id.item1:
+                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.item2:
+                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
